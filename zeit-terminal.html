@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Zeit Terminal">
+<meta name="theme-color" content="#0F6E56">
+<title>Zeit Terminal</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root {
+  --teal-50:#E1F5EE; --teal-100:#9FE1CB; --teal-200:#5DCAA5;
+  --teal-400:#1D9E75; --teal-600:#0F6E56; --teal-800:#085041;
+  --gray-50:#F1EFE8; --gray-100:#D3D1C7; --gray-200:#B4B2A9;
+  --gray-400:#888780; --gray-600:#5F5E5A; --gray-800:#444441;
+  --amber-50:#FAEEDA; --amber-200:#EF9F27; --amber-400:#BA7517; --amber-800:#633806;
+  --red-50:#FCEBEB; --red-400:#E24B4A; --red-800:#791F1F;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gray-50);min-height:100vh;display:flex;flex-direction:column;}
+
+/* Header */
+.header{background:var(--teal-600);color:white;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-icon{width:32px;height:32px;background:rgba(255,255,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.header h1{font-size:16px;font-weight:600;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.header-time{font-size:21px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums;}
+.cfg-btn{background:rgba(255,255,255,.15);border:none;border-radius:8px;padding:6px 10px;color:white;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:5px;}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1.25rem;gap:1rem;max-width:600px;margin:0 auto;width:100%;}
+.screen{width:100%;display:none;flex-direction:column;gap:1rem;}
+.screen.active{display:flex;}
+
+/* Cards */
+.card{background:white;border:1px solid var(--gray-100);border-radius:16px;padding:1.25rem;width:100%;}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-400);margin-bottom:.75rem;}
+
+/* Welcome */
+.welcome-icon{width:68px;height:68px;background:var(--teal-50);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;}
+.welcome-title{font-size:22px;font-weight:600;color:var(--gray-800);text-align:center;margin-bottom:.4rem;}
+.welcome-sub{font-size:14px;color:var(--gray-400);text-align:center;line-height:1.5;}
+
+/* Search */
+.search-wrap{position:relative;margin-bottom:10px;}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.search-input{width:100%;padding:.875rem 1rem .875rem 2.5rem;border:1.5px solid var(--gray-100);border-radius:11px;font-size:16px;color:var(--gray-800);background:white;outline:none;transition:border-color .15s;}
+.search-input:focus{border-color:var(--teal-400);}
+
+/* Techniker list */
+.tech-list{display:flex;flex-direction:column;gap:6px;max-height:380px;overflow-y:auto;}
+.tech-btn{display:flex;align-items:center;gap:12px;padding:.875rem 1rem;border:1px solid var(--gray-100);border-radius:11px;background:white;cursor:pointer;transition:all .15s;width:100%;text-align:left;}
+.tech-btn:hover,.tech-btn:active{border-color:var(--teal-200);background:var(--teal-50);}
+.tech-avatar{width:44px;height:44px;border-radius:50%;background:var(--teal-50);border:1.5px solid var(--teal-200);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--teal-600);flex-shrink:0;}
+.tech-name{font-size:15px;font-weight:600;color:var(--gray-800);}
+.tech-id{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.tech-arrow{color:var(--gray-200);margin-left:auto;font-size:20px;}
+.list-msg{text-align:center;color:var(--gray-400);font-size:14px;padding:1.25rem;}
+
+/* User header */
+.user-header{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:white;border:1px solid var(--gray-100);border-radius:16px;}
+.user-avatar{width:46px;height:46px;border-radius:50%;background:var(--teal-50);border:2px solid var(--teal-200);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--teal-600);flex-shrink:0;}
+.user-name{font-size:16px;font-weight:600;color:var(--gray-800);}
+.user-id{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.logout-btn{margin-left:auto;padding:.45rem .875rem;border:1px solid var(--gray-100);border-radius:8px;background:white;color:var(--gray-600);font-size:13px;cursor:pointer;white-space:nowrap;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat-card{background:white;border:1px solid var(--gray-100);border-radius:13px;padding:.875rem;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;color:var(--gray-800);font-variant-numeric:tabular-nums;line-height:1;}
+.stat-lbl{font-size:11px;color:var(--gray-400);margin-top:4px;font-weight:500;}
+
+/* Status */
+.status-card{background:white;border:1px solid var(--gray-100);border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;}
+.status-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;transition:all .3s;}
+.status-dot.absent{background:var(--gray-200);}
+.status-dot.present{background:var(--teal-400);box-shadow:0 0 0 4px var(--teal-50);}
+.status-dot.on-break{background:var(--amber-400);box-shadow:0 0 0 4px var(--amber-50);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px var(--amber-50);}50%{box-shadow:0 0 0 8px var(--amber-50);}}
+.status-info{flex:1;}
+.status-text{font-size:15px;font-weight:600;color:var(--gray-800);}
+.status-since{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.status-timer{margin-left:auto;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;display:none;}
+.status-timer.teal{color:var(--teal-400);display:block;}
+.status-timer.amber{color:var(--amber-400);display:block;}
+
+/* Buttons */
+.btn{width:100%;padding:1.125rem;border:none;border-radius:14px;font-size:17px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:9px;min-height:58px;}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.5;pointer-events:none;}
+.btn-checkin{background:var(--teal-600);color:white;}
+.btn-checkin:hover{background:var(--teal-800);}
+.btn-checkout{background:var(--red-400);color:white;}
+.btn-checkout:hover{background:var(--red-800);}
+.btn-pause-start{background:var(--amber-400);color:white;}
+.btn-pause-start:hover{background:var(--amber-800);}
+.btn-pause-end{background:white;color:var(--amber-800);border:2px solid var(--amber-200);}
+.btn-pause-end:hover{background:var(--amber-50);}
+.btn-outline{background:white;color:var(--gray-600);border:1px solid var(--gray-100);}
+.btn-outline:hover{background:var(--gray-50);}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-full{grid-column:1/-1;}
+
+/* Tages-Übersicht */
+.day-summary{background:white;border:1px solid var(--gray-100);border-radius:16px;padding:1.25rem;width:100%;}
+.day-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--gray-100);}
+.day-row:last-child{border-bottom:none;}
+.day-label{font-size:13px;color:var(--gray-400);}
+.day-value{font-size:14px;font-weight:600;color:var(--gray-800);font-variant-numeric:tabular-nums;}
+.pause-item{display:flex;justify-content:space-between;align-items:center;padding:.4rem .75rem;background:var(--amber-50);border-radius:8px;margin-top:6px;}
+.pause-item-time{font-size:13px;color:var(--amber-800);}
+.pause-item-dur{font-size:13px;font-weight:600;color:var(--amber-800);}
+
+/* Checkout summary modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:1.5rem;z-index:200;}
+.modal-bg.show{display:flex;}
+.modal{background:white;border-radius:20px;padding:1.75rem;width:100%;max-width:420px;}
+.modal h2{font-size:18px;font-weight:600;color:var(--gray-800);margin-bottom:1rem;}
+.modal-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--gray-100);}
+.modal-row:last-of-type{border-bottom:none;margin-bottom:1rem;}
+.modal-label{font-size:14px;color:var(--gray-400);}
+.modal-value{font-size:14px;font-weight:600;color:var(--gray-800);}
+.modal-btn{width:100%;padding:.875rem;background:var(--teal-600);color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;}
+
+/* Config modal */
+.cfg-modal{background:white;border-radius:20px;padding:1.75rem;width:100%;max-width:480px;display:flex;flex-direction:column;gap:1rem;}
+.cfg-modal h2{font-size:17px;font-weight:600;color:var(--gray-800);}
+.cfg-modal label{font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:5px;}
+.cfg-modal input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--gray-100);border-radius:10px;font-size:14px;color:var(--gray-800);outline:none;}
+.cfg-modal input:focus{border-color:var(--teal-400);}
+.cfg-btns{display:flex;gap:10px;}
+.btn-save{flex:1;padding:.8rem;background:var(--teal-600);color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;}
+.btn-cancel-sm{padding:.8rem 1.125rem;background:white;color:var(--gray-600);border:1px solid var(--gray-100);border-radius:10px;font-size:15px;cursor:pointer;}
+
+/* Error */
+.error-box{background:var(--red-50);border:1px solid #F09595;border-radius:12px;padding:.875rem 1rem;font-size:13px;color:var(--red-800);display:none;}
+.error-box.show{display:block;}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--gray-800);color:white;padding:.8rem 1.5rem;border-radius:12px;font-size:14px;font-weight:500;transition:transform .3s;z-index:100;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{background:var(--teal-600);}
+.toast.error{background:var(--red-400);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <h1>Zeit Terminal</h1>
+  </div>
+  <div class="header-right">
+    <div class="header-time" id="clock">--:--</div>
+    <button class="cfg-btn" onclick="showConfig()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Einstellungen
+    </button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Screen 1: Technikerauswahl -->
+  <div class="screen active" id="screenSelect">
+    <div style="text-align:center;padding:.25rem 0;">
+      <div class="welcome-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="1.5">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="welcome-title">Wer bist du?</div>
+      <div class="welcome-sub">Wähle deinen Namen um deine Zeit zu stempeln.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Techniker auswählen</div>
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888780" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Name oder ID suchen..." oninput="filterList()">
+      </div>
+      <div class="tech-list" id="techList">
+        <div class="list-msg" id="loadingText">Verbinde mit Business Central...</div>
+      </div>
+      <div class="error-box" id="errorBox"></div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Hauptansicht -->
+  <div class="screen" id="screenMain">
+
+    <div class="user-header">
+      <div class="user-avatar" id="userAvatar">--</div>
+      <div>
+        <div class="user-name" id="userName">-</div>
+        <div class="user-id" id="userId">-</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Abmelden</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="statCheckin">--:--</div>
+        <div class="stat-lbl">Gekommen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statBreaks">0</div>
+        <div class="stat-lbl">Pausen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statBreakMin">0</div>
+        <div class="stat-lbl">Pausenmin.</div>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-dot absent" id="statusDot"></div>
+      <div class="status-info">
+        <div class="status-text" id="statusText">Nicht eingestempelt</div>
+        <div class="status-since" id="statusSince"></div>
+      </div>
+      <div class="status-timer" id="statusTimer">00:00</div>
+    </div>
+
+    <div class="action-grid" id="actionGrid"></div>
+
+    <!-- Tages-Übersicht -->
+    <div class="day-summary" id="daySummary" style="display:none;">
+      <div class="card-title">Tages-Übersicht</div>
+      <div class="day-row">
+        <span class="day-label">Kommen</span>
+        <span class="day-value" id="sumCheckin">--:--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Gehen</span>
+        <span class="day-value" id="sumCheckout">--:--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Bruttoarbeitszeit</span>
+        <span class="day-value" id="sumGross">--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Pausenzeit</span>
+        <span class="day-value" id="sumBreak">--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Nettoarbeitszeit</span>
+        <span class="day-value" id="sumNet">--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Sollzeit</span>
+        <span class="day-value" id="sumPlanned">--</span>
+      </div>
+      <div class="day-row">
+        <span class="day-label">Überstunden</span>
+        <span class="day-value" id="sumOvertime">--</span>
+      </div>
+      <div id="pauseList" style="margin-top:.5rem;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Checkout Summary Modal -->
+<div class="modal-bg" id="checkoutModal">
+  <div class="modal">
+    <h2>✅ Erfolgreich ausgestempelt</h2>
+    <div class="modal-row"><span class="modal-label">Gekommen</span><span class="modal-value" id="mo-checkin">-</span></div>
+    <div class="modal-row"><span class="modal-label">Gegangen</span><span class="modal-value" id="mo-checkout">-</span></div>
+    <div class="modal-row"><span class="modal-label">Bruttoarbeitszeit</span><span class="modal-value" id="mo-gross">-</span></div>
+    <div class="modal-row"><span class="modal-label">Pausenzeit</span><span class="modal-value" id="mo-break">-</span></div>
+    <div class="modal-row"><span class="modal-label">Nettoarbeitszeit</span><span class="modal-value" id="mo-net">-</span></div>
+    <button class="modal-btn" onclick="closeCheckoutModal()">Fertig</button>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="cfg-modal">
+    <h2>BC-Verbindung</h2>
+    <div><label>Tenant ID</label><input type="text" id="cfgTenant"></div>
+    <div><label>Umgebung</label><input type="text" id="cfgEnv"></div>
+    <div><label>Client ID</label><input type="text" id="cfgClientId"></div>
+    <div class="cfg-btns">
+      <button class="btn-cancel-sm" onclick="hideConfig()">Abbrechen</button>
+      <button class="btn-save" onclick="saveConfig()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────
+const DEFAULT_CONFIG = {
+  tenant: '16453c34-b7f8-45d7-99b7-7ffc6f949dd4',
+  env: 'SE_30042026',
+  clientId: 'cd7c672f-c722-42ed-a362-b5c530a2775b'
+};
+let config = { ...DEFAULT_CONFIG, ...JSON.parse(localStorage.getItem('bcConfig') || '{}') };
+
+// ── State ─────────────────────────────────────────────────────────
+let techData = [], filteredData = [];
+let currentTech = null;
+let companyId = null;
+let zeitEntryNo = null, zeitEtag = '*';
+let pauseEntryNo = null, pauseEtag = '*';
+let checkInTime = null, breakStartTime = null;
+let mainTimer = null, breakTimer = null;
+let currentState = 'absent';
+
+// ── Init ──────────────────────────────────────────────────────────
+window.onload = () => {
+  startClock();
+  loadTechniker();
+};
+
+// ── Clock ─────────────────────────────────────────────────────────
+function startClock() {
+  const tick = () => {
+    document.getElementById('clock').textContent =
+      new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ── Auth ──────────────────────────────────────────────────────────
+let msalApp = null;
+async function getToken() {
+  if (!msalApp) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    msalApp = new msal.PublicClientApplication({
+      auth: {
+        clientId: config.clientId,
+        authority: `https://login.microsoftonline.com/${config.tenant}`,
+        redirectUri: location.origin + location.pathname
+      },
+      cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true }
+    });
+    await msalApp.initialize();
+  }
+  const scopes = ['https://api.businesscentral.dynamics.com/Financials.ReadWrite.All'];
+  try { return (await msalApp.acquireTokenSilent({ scopes })).accessToken; }
+  catch { return (await msalApp.acquireTokenPopup({ scopes })).accessToken; }
+}
+
+// ── Company ID ────────────────────────────────────────────────────
+async function getCompanyId() {
+  if (companyId) return companyId;
+  const token = await getToken();
+  const res = await fetch(
+    `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/v2.0/companies`,
+    { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }
+  );
+  if (!res.ok) throw new Error(`Company Fehler ${res.status}`);
+  const data = await res.json();
+  const company = (data.value || []).find(c => c.name === 'My Company')
+    || (data.value || [])[0];
+  if (!company) throw new Error('Kein Unternehmen gefunden');
+  companyId = company.id;
+  return companyId;
+}
+
+function apiUrl(group, version, path) {
+  return `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/se/${group}/${version}/companies(${companyId})/${path}`;
+}
+
+async function apiFetch(group, version, path, options = {}) {
+  await getCompanyId();
+  const token = await getToken();
+  const res = await fetch(apiUrl(group, version, path), {
+    ...options,
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json', ...(options.headers || {}) }
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(`BC ${res.status}: ${t.substring(0, 200)}`); }
+  return res.status === 204 ? null : res.json();
+}
+
+// ── Techniker laden ───────────────────────────────────────────────
+async function loadTechniker() {
+  const loadEl = document.getElementById('loadingText');
+  const errEl = document.getElementById('errorBox');
+  if (loadEl) { loadEl.style.display = 'block'; loadEl.textContent = 'Lade Techniker...'; }
+  if (errEl) errEl.classList.remove('show');
+  try {
+    await getCompanyId();
+    const token = await getToken();
+    const res = await fetch(
+      `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/se/techniker/v1.0/companies(${companyId})/seTechniker`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }
+    );
+    if (!res.ok) throw new Error(`Fehler ${res.status}`);
+    const data = await res.json();
+    techData = (data.value || []).map(t => ({ id: t.technicianId, name: t.name }));
+    filteredData = [...techData];
+    renderList();
+    if (loadEl) loadEl.style.display = 'none';
+  } catch(e) {
+    if (loadEl) loadEl.style.display = 'none';
+    if (errEl) { errEl.textContent = 'Verbindung fehlgeschlagen: ' + e.message; errEl.classList.add('show'); }
+  }
+}
+
+function renderList() {
+  const list = document.getElementById('techList');
+  if (!filteredData.length) { list.innerHTML = '<div class="list-msg">Keine Techniker gefunden</div>'; return; }
+  list.innerHTML = filteredData.map(t => {
+    const ini = (t.name || t.id || '?').split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+    return `<button class="tech-btn" onclick="selectTech('${t.id}','${(t.name||'').replace(/'/g,"\\'")}')">
+      <div class="tech-avatar">${ini}</div>
+      <div><div class="tech-name">${t.name||t.id}</div><div class="tech-id">ID: ${t.id}</div></div>
+      <div class="tech-arrow">›</div>
+    </button>`;
+  }).join('');
+}
+
+function filterList() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  filteredData = techData.filter(t =>
+    (t.name||'').toLowerCase().includes(q) || (t.id||'').toLowerCase().includes(q)
+  );
+  renderList();
+}
+
+// ── Techniker auswählen ───────────────────────────────────────────
+async function selectTech(id, name) {
+  currentTech = { id, name };
+  const ini = name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('userAvatar').textContent = ini;
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userId').textContent = 'ID: ' + id;
+  showScreen('screenMain');
+  await refreshAll();
+}
+
+// ── Refresh ───────────────────────────────────────────────────────
+async function refreshAll() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    const zeitData = await apiFetch('zeit', 'v1.0',
+      `seZeiterfassungen?$filter=technicianId eq '${currentTech.id}' and date eq ${today}`);
+    const zeitRecords = zeitData.value || [];
+    const openZeit = zeitRecords.find(r => r.status === 'Open');
+    const closedZeit = zeitRecords.find(r => r.status === 'Closed');
+
+    const pauseData = await apiFetch('pause', 'v1.0',
+      `sePauseRecords?$filter=technicianId eq '${currentTech.id}' and date eq ${today}`);
+    const pauseRecords = pauseData.value || [];
+    const openPause = pauseRecords.find(r => r.status === 'On_x0020_Break' || r.status === 'On Break');
+    const donePauses = pauseRecords.filter(r => r.status !== 'On_x0020_Break' && r.status !== 'On Break');
+    const totalBreakMin = Math.round(donePauses.reduce((s, r) => s + (r.breakDuration || 0), 0));
+
+    document.getElementById('statBreaks').textContent = pauseRecords.length;
+    document.getElementById('statBreakMin').textContent = totalBreakMin;
+
+    // Tages-Übersicht aktualisieren
+    updateDaySummary(openZeit || closedZeit, pauseRecords, totalBreakMin);
+
+    if (openZeit) {
+      zeitEntryNo = openZeit.entryNo || openZeit.id;
+      zeitEtag = openZeit['@odata.etag'] || '*';
+      checkInTime = parseTime(openZeit.checkInTime);
+      document.getElementById('statCheckin').textContent = fmtTime(openZeit.checkInTime);
+      if (openPause) {
+        pauseEntryNo = openPause.entryNo || openPause.id;
+        pauseEtag = openPause['@odata.etag'] || '*';
+        breakStartTime = parseTime(openPause.breakStart);
+        setState('on-break', openPause.breakStart);
+      } else {
+        pauseEntryNo = null; breakStartTime = null;
+        setState('present', openZeit.checkInTime);
+      }
+    } else if (closedZeit) {
+      zeitEntryNo = null; checkInTime = null; pauseEntryNo = null; breakStartTime = null;
+      document.getElementById('statCheckin').textContent = fmtTime(closedZeit.checkInTime);
+      setState('absent');
+    } else {
+      zeitEntryNo = null; checkInTime = null; pauseEntryNo = null; breakStartTime = null;
+      document.getElementById('statCheckin').textContent = '--:--';
+      setState('absent');
+    }
+  } catch(e) {
+    showToast('Statusabfrage fehlgeschlagen: ' + e.message, 'error');
+  }
+}
+
+// ── Tages-Übersicht ───────────────────────────────────────────────
+function updateDaySummary(zeitRec, pauseRecords, totalBreakMin) {
+  const summary = document.getElementById('daySummary');
+  if (!zeitRec) { summary.style.display = 'none'; return; }
+  summary.style.display = 'block';
+
+  document.getElementById('sumCheckin').textContent = fmtTime(zeitRec.checkInTime);
+  document.getElementById('sumCheckout').textContent = zeitRec.checkOutTime ? fmtTime(zeitRec.checkOutTime) : 'Noch anwesend';
+  document.getElementById('sumGross').textContent = zeitRec.grossWorkTime ? fmtMinutes(zeitRec.grossWorkTime) : '--';
+  document.getElementById('sumBreak').textContent = fmtMinutes(totalBreakMin);
+  document.getElementById('sumNet').textContent = zeitRec.netWorkTime ? fmtMinutes(zeitRec.netWorkTime) : '--';
+  document.getElementById('sumPlanned').textContent = zeitRec.plannedMinutes ? fmtMinutes(zeitRec.plannedMinutes) : '--';
+
+  if (zeitRec.overtime !== undefined && zeitRec.overtime !== null) {
+    const ot = zeitRec.overtime;
+    const el = document.getElementById('sumOvertime');
+    el.textContent = (ot >= 0 ? '+' : '') + fmtMinutes(ot);
+    el.style.color = ot > 0 ? 'var(--teal-600)' : ot < 0 ? 'var(--red-400)' : 'var(--gray-800)';
+  } else {
+    document.getElementById('sumOvertime').textContent = '--';
+  }
+
+  // Pausenliste
+  const pauseList = document.getElementById('pauseList');
+  const donePauses = pauseRecords.filter(r => r.status !== 'On_x0020_Break' && r.status !== 'On Break');
+  if (donePauses.length > 0) {
+    pauseList.innerHTML = '<div class="card-title" style="margin-top:.5rem;">Pausen</div>' +
+      donePauses.map(p => `
+        <div class="pause-item">
+          <span class="pause-item-time">${fmtTime(p.breakStart)} – ${fmtTime(p.breakEnd)}</span>
+          <span class="pause-item-dur">${Math.round(p.breakDuration || 0)} Min.</span>
+        </div>`).join('');
+  } else {
+    pauseList.innerHTML = '';
+  }
+}
+
+// ── setState ──────────────────────────────────────────────────────
+function setState(state, sinceTime) {
+  currentState = state;
+  clearInterval(mainTimer); clearInterval(breakTimer);
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  const since = document.getElementById('statusSince');
+  const timer = document.getElementById('statusTimer');
+  const grid = document.getElementById('actionGrid');
+  dot.className = 'status-dot ' + state;
+  timer.className = 'status-timer';
+
+  if (state === 'absent') {
+    txt.textContent = 'Nicht eingestempelt';
+    since.textContent = '';
+    grid.innerHTML = `<button class="btn btn-checkin btn-full" onclick="doCheckIn()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Einstempeln</button>`;
+  }
+  if (state === 'present') {
+    txt.textContent = 'Anwesend';
+    since.textContent = sinceTime ? 'Seit ' + fmtTime(sinceTime) + ' Uhr' : '';
+    timer.className = 'status-timer teal';
+    startMainTimer();
+    grid.innerHTML = `
+      <button class="btn btn-pause-start" onclick="doStartPause()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        Pause starten</button>
+      <button class="btn btn-checkout" onclick="doCheckOut()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Ausstempeln</button>`;
+  }
+  if (state === 'on-break') {
+    txt.textContent = 'In Pause';
+    since.textContent = sinceTime ? 'Seit ' + fmtTime(sinceTime) + ' Uhr' : '';
+    timer.className = 'status-timer amber';
+    startBreakTimer();
+    grid.innerHTML = `<button class="btn btn-pause-end btn-full" onclick="doEndPause()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Pause beenden</button>`;
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────────────
+function startMainTimer() {
+  const tick = () => {
+    if (!checkInTime) return;
+    document.getElementById('statusTimer').textContent = fmtDuration(Math.floor((Date.now() - checkInTime) / 1000));
+  };
+  tick(); mainTimer = setInterval(tick, 1000);
+}
+function startBreakTimer() {
+  const tick = () => {
+    if (!breakStartTime) return;
+    document.getElementById('statusTimer').textContent = fmtDuration(Math.floor((Date.now() - breakStartTime) / 1000));
+  };
+  tick(); breakTimer = setInterval(tick, 1000);
+}
+
+// ── Aktionen ──────────────────────────────────────────────────────
+async function doCheckIn() {
+  setLoading(true);
+  try {
+    const now = new Date();
+    await apiFetch('zeit', 'v1.0', 'seZeiterfassungen', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        technicianId: String(currentTech.id),
+        date: now.toISOString().split('T')[0],
+        checkInTime: now.toTimeString().split(' ')[0],
+        status: 'Open'
+      })
+    });
+    showToast('Eingestempelt ✓', 'success');
+    await refreshAll();
+  } catch(e) { showToast('Fehler: ' + e.message, 'error'); }
+  setLoading(false);
+}
+
+async function doCheckOut() {
+  if (!confirm('Wirklich ausstempeln?')) return;
+  setLoading(true);
+  try {
+    const now = new Date();
+    const timeStr = now.toTimeString().split(' ')[0];
+    const grossMin = checkInTime ? Math.round((now.getTime() - checkInTime) / 60000) : 0;
+    const breakMin = parseInt(document.getElementById('statBreakMin').textContent) || 0;
+    const netMin = Math.max(0, grossMin - breakMin);
+    await apiFetch('zeit', 'v1.0', `seZeiterfassungen(${zeitEntryNo})`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'If-Match': zeitEtag },
+      body: JSON.stringify({
+        checkOutTime: timeStr,
+        status: 'Closed',
+        grossWorkTime: grossMin,
+        totalBreakTime: breakMin,
+        netWorkTime: netMin
+      })
+    });
+    clearInterval(mainTimer);
+    showCheckoutSummary(checkInTime, now, grossMin, breakMin, netMin);
+    await refreshAll();
+  } catch(e) { showToast('Fehler: ' + e.message, 'error'); }
+  setLoading(false);
+}
+
+async function doStartPause() {
+  setLoading(true);
+  try {
+    const now = new Date();
+    await apiFetch('pause', 'v1.0', 'sePauseRecords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        technicianId: String(currentTech.id),
+        date: now.toISOString().split('T')[0],
+        breakStart: now.toTimeString().split(' ')[0],
+        status: 'On Break'
+      })
+    });
+    showToast('Pause gestartet ✓', 'success');
+    await refreshAll();
+  } catch(e) { showToast('Fehler: ' + e.message, 'error'); }
+  setLoading(false);
+}
+
+async function doEndPause() {
+  setLoading(true);
+  try {
+    const now = new Date();
+    const timeStr = now.toTimeString().split(' ')[0];
+    const durationMin = breakStartTime ? Math.round((now.getTime() - breakStartTime) / 60000) : 0;
+    await apiFetch('pause', 'v1.0', `sePauseRecords(${pauseEntryNo})`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'If-Match': pauseEtag },
+      body: JSON.stringify({ breakEnd: timeStr, breakDuration: durationMin, status: 'Working' })
+    });
+    clearInterval(breakTimer);
+    showToast('Pause beendet ✓', 'success');
+    await refreshAll();
+  } catch(e) { showToast('Fehler: ' + e.message, 'error'); }
+  setLoading(false);
+}
+
+// ── Checkout Summary ──────────────────────────────────────────────
+function showCheckoutSummary(checkIn, checkOut, grossMin, breakMin, netMin) {
+  document.getElementById('mo-checkin').textContent = checkIn ? new Date(checkIn).toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}) : '--';
+  document.getElementById('mo-checkout').textContent = checkOut.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+  document.getElementById('mo-gross').textContent = fmtMinutes(grossMin);
+  document.getElementById('mo-break').textContent = fmtMinutes(breakMin);
+  document.getElementById('mo-net').textContent = fmtMinutes(netMin);
+  document.getElementById('checkoutModal').classList.add('show');
+}
+function closeCheckoutModal() {
+  document.getElementById('checkoutModal').classList.remove('show');
+}
+
+// ── Logout ────────────────────────────────────────────────────────
+function logout() {
+  if (currentState !== 'absent') {
+    if (!confirm('Du bist noch eingestempelt. Trotzdem abmelden?')) return;
+  }
+  clearInterval(mainTimer); clearInterval(breakTimer);
+  currentTech = null; companyId = null;
+  zeitEntryNo = null; zeitEtag = '*';
+  pauseEntryNo = null; pauseEtag = '*';
+  checkInTime = null; breakStartTime = null;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('daySummary').style.display = 'none';
+  filterList();
+  showScreen('screenSelect');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+function parseTime(t) {
+  if (!t) return null;
+  const p = t.split(':');
+  const d = new Date();
+  d.setHours(+p[0], +p[1], +(p[2]||0), 0);
+  return d.getTime();
+}
+function fmtTime(t) {
+  if (!t) return '--:--';
+  const p = t.split(':');
+  return p[0].padStart(2,'0') + ':' + p[1].padStart(2,'0');
+}
+function fmtDuration(s) {
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60).toString().padStart(2,'0');
+  const sec = (s%60).toString().padStart(2,'0');
+  return h > 0 ? `${h}:${m}:${sec}` : `${m}:${sec}`;
+}
+function fmtMinutes(min) {
+  const m = Math.abs(Math.round(min));
+  const h = Math.floor(m/60);
+  const rest = m%60;
+  const sign = min < 0 ? '-' : '';
+  return h > 0 ? `${sign}${h}h ${rest}min` : `${sign}${rest}min`;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function setLoading(v) {
+  document.querySelectorAll('.btn').forEach(b => b.disabled = v);
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ── Config ────────────────────────────────────────────────────────
+function showConfig() {
+  document.getElementById('cfgTenant').value = config.tenant || '';
+  document.getElementById('cfgEnv').value = config.env || '';
+  document.getElementById('cfgClientId').value = config.clientId || '';
+  document.getElementById('modalBg').classList.add('show');
+}
+function hideConfig() { document.getElementById('modalBg').classList.remove('show'); }
+function saveConfig() {
+  config = {
+    tenant: document.getElementById('cfgTenant').value.trim(),
+    env: document.getElementById('cfgEnv').value.trim(),
+    clientId: document.getElementById('cfgClientId').value.trim()
+  };
+  localStorage.setItem('bcConfig', JSON.stringify(config));
+  companyId = null; msalApp = null;
+  hideConfig();
+  loadTechniker();
+}
+</script>
+</body>
+</html>
