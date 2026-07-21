@@ -619,6 +619,17 @@ function updateChips() {
 async function openTask(systemId) {
   currentTask = allTasks.find(t => t.systemId === systemId);
   if (!currentTask) return;
+
+  // Immer den aktuellen Stand aus BC holen - Änderungen aus BC sollen sichtbar sein
+  try {
+    const frisch = await apiFetch(apiUrl('calibration', 'v1.0', `orderLineTasks(${systemId})`));
+    if (frisch) {
+      currentTask = frisch;
+      const i = allTasks.findIndex(t => t.systemId === systemId);
+      if (i >= 0) allTasks[i] = frisch;
+    }
+  } catch (e) { console.warn('Aufgabe konnte nicht neu geladen werden', e); }
+
   currentEtag = currentTask['@odata.etag'] || '*';
 
   document.getElementById('detDevice').textContent =
