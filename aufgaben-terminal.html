@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A1628">
+<title>Aufgaben · Systems Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#060F1E; --navy-800:#0A1628; --navy-700:#0F1F35;
+  --blue:#1B4DFF; --blue-hover:#0F3BE0; --blue-soft:#E8EDFF;
+  --light:#EEF2FA; --white:#FFFFFF;
+  --ink-900:#0A1628; --ink-600:#4A5A70; --ink-400:#7A8798; --line:#D5DEEC;
+  --green:#1E8B72; --green-soft:#E4F4F0;
+  --amber:#B8721A; --amber-soft:#FBF0DE;
+  --red:#C93838; --red-soft:#FBEAEA;
+  --mono:'IBM Plex Mono','SF Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;font-variant-numeric:tabular-nums;background:var(--light);color:var(--ink-900);min-height:100vh;display:flex;flex-direction:column;}
+
+.header{background:var(--navy-800);color:#fff;padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.header-left{display:flex;align-items:center;gap:14px;}
+.logo{border:1.5px solid rgba(255,255,255,.85);padding:5px 9px;line-height:1;}
+.logo b{display:block;font-size:13px;font-weight:800;letter-spacing:.5px;}
+.logo span{display:block;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.7);}
+.header-sub{font-size:10px;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.55);line-height:1.5;border-left:1px solid rgba(255,255,255,.2);padding-left:14px;}
+.cfg-btn{background:none;border:1px solid rgba(255,255,255,.25);padding:7px 13px;color:#fff;cursor:pointer;font-size:12px;letter-spacing:.4px;font-family:inherit;}
+.cfg-btn:hover{background:rgba(255,255,255,.08);}
+.rule{height:14px;background:var(--navy-800);position:relative;overflow:hidden;}
+.rule:after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 1px,transparent 1px 20px);}
+
+.main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1.75rem 1.25rem 3rem;gap:1rem;max-width:860px;margin:0 auto;width:100%;}
+.screen{width:100%;display:none;flex-direction:column;gap:1rem;}
+.screen.active{display:flex;}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:12px;margin-bottom:.6rem;}
+.eyebrow:before{content:"";width:34px;height:1px;background:var(--blue);}
+h2.title{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.12;}
+h2.title em{font-style:normal;color:var(--blue);}
+.sub{font-size:14px;color:var(--ink-600);margin-top:.5rem;line-height:1.6;}
+
+.card{background:var(--white);border:1px solid var(--line);padding:1.25rem;width:100%;}
+.card-title{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.6px;color:var(--ink-400);margin-bottom:1rem;}
+
+.search-input{width:100%;padding:.8rem .9rem;border:1px solid var(--line);font-size:15px;color:var(--ink-900);background:var(--white);outline:none;font-family:inherit;margin-bottom:10px;}
+.search-input:focus{border-color:var(--blue);}
+
+.tech-list{display:flex;flex-direction:column;max-height:400px;overflow-y:auto;}
+.tech-btn{display:flex;align-items:center;gap:14px;padding:.9rem .25rem;border:none;border-bottom:1px solid var(--line);background:none;cursor:pointer;width:100%;text-align:left;font-family:inherit;}
+.tech-btn:last-child{border-bottom:none;}
+.tech-btn:hover{background:var(--blue-soft);}
+.tech-avatar{width:40px;height:40px;background:var(--navy-800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--mono);flex-shrink:0;}
+.tech-name{font-size:15px;font-weight:600;}
+.tech-id{font-family:var(--mono);font-size:11px;color:var(--ink-400);margin-top:2px;letter-spacing:.5px;}
+.list-msg{text-align:center;color:var(--ink-400);font-size:14px;padding:1.5rem;}
+
+.user-header{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;background:var(--navy-800);color:#fff;}
+.user-avatar{width:42px;height:42px;border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--mono);flex-shrink:0;}
+.user-name{font-size:16px;font-weight:700;}
+.user-id{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:.5px;}
+.logout-btn{margin-left:auto;padding:.5rem .9rem;border:1px solid rgba(255,255,255,.3);background:none;color:#fff;font-size:12px;cursor:pointer;font-family:inherit;letter-spacing:.3px;white-space:nowrap;}
+.logout-btn:hover{background:rgba(255,255,255,.1);}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--blue);color:#fff;}
+.stat{padding:1rem 1.1rem;border-right:1px solid rgba(255,255,255,.22);}
+.stat:last-child{border-right:none;}
+.stat-val{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
+.stat-lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,.85);}
+
+.toolbar{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:var(--white);}
+.chip{padding:.7rem 1rem;border:none;border-right:1px solid var(--line);background:none;color:var(--ink-600);font-size:12.5px;cursor:pointer;font-family:inherit;letter-spacing:.2px;}
+.chip:last-child{border-right:none;}
+.chip:hover{background:var(--light);}
+.chip.active{background:var(--navy-800);color:#fff;}
+
+.task-list{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);}
+.task-btn{display:flex;align-items:stretch;background:var(--white);border:none;cursor:pointer;width:100%;text-align:left;font-family:inherit;padding:0;}
+.task-btn:hover{background:var(--blue-soft);}
+.task-accent{width:3px;background:var(--line);flex-shrink:0;}
+.task-btn:hover .task-accent{background:var(--blue);}
+.task-inner{flex:1;display:flex;justify-content:space-between;gap:14px;padding:1rem 1.1rem;min-width:0;}
+.task-main{min-width:0;}
+.task-dev{font-size:15.5px;font-weight:700;letter-spacing:-.2px;}
+.task-desc{font-size:13px;color:var(--ink-600);margin-top:3px;}
+.task-meta{font-size:12px;color:var(--ink-600);margin-top:7px;line-height:1.7;}
+.task-meta .id{font-family:var(--mono);font-size:11px;color:var(--ink-400);letter-spacing:.3px;}
+.task-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.8px;padding:.25rem .55rem;}
+.tag-kiste{background:var(--blue-soft);color:var(--blue);}
+.tag-scope{background:var(--light);color:var(--ink-600);letter-spacing:.4px;font-weight:500;}
+.tag-bem{background:var(--amber-soft);color:var(--amber);}
+.task-side{text-align:right;flex-shrink:0;}
+.badge{display:inline-block;padding:.25rem .6rem;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;}
+.badge-neu{background:var(--light);color:var(--ink-600);}
+.badge-kal{background:var(--amber-soft);color:var(--amber);}
+.badge-fertig{background:var(--green-soft);color:var(--green);}
+.due{font-family:var(--mono);font-size:12px;margin-top:8px;color:var(--ink-400);letter-spacing:.5px;}
+.due.over{color:var(--red);font-weight:700;}
+.due.soon{color:var(--amber);font-weight:700;}
+.prog-wrap{margin-top:9px;}
+.prog-lbl{font-family:var(--mono);font-size:10px;color:var(--ink-400);letter-spacing:.8px;display:flex;justify-content:space-between;gap:10px;}
+.prog-pct{color:var(--ink-900);font-weight:700;}
+.prog-bar{height:3px;background:var(--line);margin-top:4px;width:150px;max-width:100%;}
+.prog-fill{height:100%;background:var(--green);}
+
+.det-head{background:var(--navy-800);color:#fff;padding:1.25rem;display:flex;align-items:flex-start;gap:14px;}
+.det-dev{font-size:20px;font-weight:800;letter-spacing:-.3px;}
+.det-meta{font-size:13px;color:rgba(255,255,255,.75);margin-top:6px;line-height:1.7;}
+.det-meta .id{font-family:var(--mono);font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:.4px;}
+
+.field{margin-bottom:1rem;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-400);margin-bottom:.45rem;}
+.field input[type=text],.field input[type=number],.field select,.field textarea{
+  width:100%;padding:.75rem .85rem;border:1px solid var(--line);font-size:15px;
+  color:var(--ink-900);background:var(--white);outline:none;font-family:inherit;}
+.field input[type=number]{font-family:var(--mono);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);}
+.field textarea{min-height:84px;resize:vertical;line-height:1.55;}
+
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.switch-lbl{font-size:15px;font-weight:600;}
+.switch{position:relative;width:50px;height:28px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:var(--line);cursor:pointer;transition:.15s;}
+.slider:before{content:"";position:absolute;height:22px;width:22px;left:3px;top:3px;background:#fff;transition:.15s;}
+.switch input:checked + .slider{background:var(--blue);}
+.switch input:checked + .slider:before{transform:translateX(22px);}
+
+.et-row{display:flex;align-items:center;gap:10px;padding:.7rem .85rem;border:1px solid var(--line);border-left:3px solid var(--blue);margin-bottom:6px;background:var(--white);}
+.et-info{flex:1;min-width:0;}
+.et-name{font-size:14px;font-weight:600;}
+.et-sub{font-family:var(--mono);font-size:11px;color:var(--ink-400);margin-top:3px;letter-spacing:.4px;}
+.et-del{border:none;background:none;color:var(--red);cursor:pointer;font-size:22px;line-height:1;padding:0 6px;}
+.et-add{display:grid;grid-template-columns:1fr 92px auto;gap:8px;align-items:end;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+
+.btn{width:100%;padding:1rem;border:none;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;min-height:54px;font-family:inherit;letter-spacing:.2px;}
+.btn:active{transform:translateY(1px);}
+.btn:disabled{opacity:.45;pointer-events:none;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue-hover);}
+.btn-outline{background:var(--white);color:var(--ink-900);border:1px solid var(--ink-900);}
+.btn-outline:hover{background:var(--light);}
+.btn-sm{padding:.72rem 1rem;min-height:auto;font-size:13px;width:auto;}
+.info-grid{display:flex;flex-direction:column;gap:.85rem;}
+.info-item{display:flex;gap:14px;align-items:flex-start;}
+.info-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-400);width:130px;flex-shrink:0;padding-top:2px;}
+.info-val{font-size:14.5px;line-height:1.55;flex:1;}
+.info-val.kiste{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--blue);}
+.info-val.bem{color:var(--ink-900);background:var(--amber-soft);border-left:3px solid var(--amber);padding:.6rem .75rem;}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.action-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.btn-amber{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber);}
+.btn-amber:hover{background:#F6E3C6;}
+@media(max-width:640px){.action-grid.three{grid-template-columns:1fr;}}
+
+.err{background:var(--red-soft);color:var(--red);border-left:3px solid var(--red);padding:.9rem 1rem;font-size:13px;display:none;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);line-height:1.6;}
+.err.show{display:block;}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--navy-800);color:#fff;padding:.85rem 1.4rem;font-size:14px;opacity:0;transition:.22s;z-index:300;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+.modal-bg{position:fixed;inset:0;background:rgba(6,15,30,.72);display:none;align-items:center;justify-content:center;padding:1.5rem;z-index:200;}
+.modal-bg.show{display:flex;}
+.cfg-modal{background:#fff;padding:1.6rem;width:100%;max-width:420px;border-top:3px solid var(--blue);}
+.cfg-modal h2{font-size:18px;font-weight:800;margin-bottom:1.1rem;}
+.cfg-modal label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-400);margin:.75rem 0 .3rem;}
+.cfg-modal input{width:100%;padding:.7rem;border:1px solid var(--line);font-size:14px;font-family:var(--mono);outline:none;}
+.cfg-modal input:focus{border-color:var(--blue);}
+.cfg-btns{display:flex;gap:8px;margin-top:1.4rem;}
+
+@media(max-width:560px){
+  .header-sub{display:none;}
+  .task-inner{flex-direction:column;gap:10px;}
+  .task-side{text-align:left;}
+  .et-add{grid-template-columns:1fr;}
+  h2.title{font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo"><b>SYSTEMS</b><span>engineering</span></div>
+    <div class="header-sub">Techniker<br>Aufgaben</div>
+  </div>
+  <button class="cfg-btn" onclick="showConfig()">Einstellungen</button>
+</div>
+<div class="rule"></div>
+
+<div class="main">
+
+  <div class="screen" id="screenPick">
+    <div>
+      <div class="eyebrow">Anmeldung</div>
+      <h2 class="title"><em>Techniker/in</em> auswählen</h2>
+      <div class="sub">Wähle deinen Namen, um deine Geräte und Aufgaben zu sehen.</div>
+    </div>
+    <div class="card">
+      <input class="search-input" id="techSearch" placeholder="Name oder ID suchen..." oninput="filterTech()">
+      <div class="tech-list" id="techList"><div class="list-msg" id="loadingText">Lade Techniker...</div></div>
+    </div>
+    <div class="err" id="errPick"></div>
+  </div>
+
+  <div class="screen" id="screenList">
+    <div class="user-header">
+      <div class="user-avatar" id="userInitials">--</div>
+      <div>
+        <div class="user-name" id="userName">-</div>
+        <div class="user-id" id="userId"></div>
+      </div>
+      <button class="logout-btn" onclick="backToPick()">Wechseln</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="statOpen">0</div><div class="stat-lbl">Offen</div></div>
+      <div class="stat"><div class="stat-val" id="statDue">0</div><div class="stat-lbl">Überfällig</div></div>
+      <div class="stat"><div class="stat-val" id="statDone">0</div><div class="stat-lbl">Fertig</div></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="chip active" id="chipMine" onclick="setScope('mine')">Meine Geräte</button>
+      <button class="chip" id="chipAll" onclick="setScope('all')">Alle anzeigen</button>
+      <button class="chip" id="chipDone" onclick="toggleDone()">Erledigte einblenden</button>
+      <button class="chip" onclick="loadTasks()">Aktualisieren</button>
+    </div>
+
+    <div class="err" id="errList"></div>
+    <div class="task-list" id="taskList"><div class="list-msg">Lade Aufgaben...</div></div>
+  </div>
+
+  <div class="screen" id="screenDetail">
+    <div class="det-head">
+      <div style="flex:1;min-width:0;">
+        <div class="det-dev" id="detDevice">-</div>
+        <div class="det-meta" id="detMeta"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
+        <button class="logout-btn" onclick="backToList()">Zurück</button>
+        <a class="logout-btn" id="spLink" href="#" target="_blank" rel="noopener"
+           style="display:none;text-decoration:none;text-align:center;">Unterlagen</a>
+      </div>
+    </div>
+
+    <div class="err" id="errDetail"></div>
+
+    <div class="card" id="infoCard" style="display:none;">
+      <div class="card-title">Auftragsinfo</div>
+      <div class="info-grid" id="infoGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Abgleich</div>
+      <div class="switch-row">
+        <span class="switch-lbl">Abgleich durchgeführt</span>
+        <label class="switch"><input type="checkbox" id="fAbgleichAn" onchange="onAbgleichAnChange()"><span class="slider"></span></label>
+      </div>
+      <div id="wrapAbgl" style="margin-top:1.1rem;">
+        <div class="field">
+          <label>Art des Abgleichs</label>
+          <select id="fAbgleich" onchange="onAbgleichChange()">
+            <option value="Abgleich">Abgleich</option>
+            <option value="Abgleich2Scheine">Abgleich (2 Kalibrierscheine)</option>
+          </select>
+        </div>
+        <div class="field" id="wrapAbglDauer">
+          <label>Dauer in Stunden</label>
+          <input type="number" step="0.25" min="0" id="fAbgleichDauer" placeholder="0,00">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Reparatur</div>
+      <div class="switch-row">
+        <span class="switch-lbl">Reparatur durchgeführt</span>
+        <label class="switch"><input type="checkbox" id="fReparatur" onchange="onReparaturChange()"><span class="slider"></span></label>
+      </div>
+      <div id="wrapRep" style="margin-top:1.1rem;">
+        <div class="field">
+          <label>Was wurde repariert?</label>
+          <textarea id="fRepBeschr" placeholder="Beschreibung der Reparatur"></textarea>
+        </div>
+        <div class="field">
+          <label>Dauer in Stunden</label>
+          <input type="number" step="0.25" min="0" id="fRepDauer" placeholder="0,00">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ersatzteile</div>
+      <div class="switch-row">
+        <span class="switch-lbl">Ersatzteile verwendet</span>
+        <label class="switch"><input type="checkbox" id="fErsatzteile" onchange="onErsatzChange()"><span class="slider"></span></label>
+      </div>
+      <div id="wrapEt" style="margin-top:1.1rem;">
+        <div id="etList"></div>
+        <div class="et-add">
+          <div class="field" style="margin:0;">
+            <label>Artikel</label>
+            <select id="etItem"><option value="">– wählen –</option></select>
+          </div>
+          <div class="field" style="margin:0;">
+            <label>Menge</label>
+            <input type="number" step="1" min="1" value="1" id="etQty">
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="addErsatzteil()">Hinzufügen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Notiz</div>
+      <div class="field">
+        <textarea id="fNotiz" placeholder="z. B. Absprache mit Kunde..."></textarea>
+      </div>
+    </div>
+
+    <div class="action-grid three">
+      <button class="btn btn-outline" onclick="saveTask(null)">Speichern</button>
+      <button class="btn btn-amber" onclick="saveTask('Kalibrierung')">In Kalibrierung</button>
+      <button class="btn btn-primary" onclick="saveTask('Fertig')">Fertig melden</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="cfg-modal">
+    <h2>BC-Verbindung</h2>
+    <div><label>Tenant ID</label><input type="text" id="cfgTenant"></div>
+    <div><label>Umgebung</label><input type="text" id="cfgEnv"></div>
+    <div><label>Client ID</label><input type="text" id="cfgClientId"></div>
+    <div><label>SharePoint-Ordner (Basis-URL)</label><input type="text" id="cfgSpBase" placeholder="https://...sharepoint.com/sites/.../Auftraege"></div>
+    <div class="cfg-btns">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="hideConfig()">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" style="flex:1" onclick="saveConfig()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────
+const DEFAULT_CONFIG = {
+  tenant: '16453c34-b7f8-45d7-99b7-7ffc6f949dd4',
+  env: 'SETest',
+  clientId: 'cd7c672f-c722-42ed-a362-b5c530a2775b',
+  spBase: 'https://systemsengineering93.sharepoint.com/sites/SystemsEngineering/Kalibrierauftrge/Aktiv'
+};
+let config = { ...DEFAULT_CONFIG, ...JSON.parse(localStorage.getItem('bcConfig') || '{}') };
+
+const EXCLUDED_ITEMS = ['ABGLEICH', 'REPARATUR', 'KALIBRIERUNG', 'ABGLEICH_50%'];
+
+// ── State ────────────────────────────────────────────────────────
+let companyId = null;
+let techData = [], filteredTech = [];
+let currentTech = null;
+let allTasks = [];
+let orderProgress = {};
+let scope = 'mine';
+let showDone = false;
+let currentTask = null;
+let currentEtag = '*';
+let spareParts = [];
+let serviceItems = [];
+
+window.onload = () => { loadTechniker(); };
+
+// ── Auth ─────────────────────────────────────────────────────────
+let msalApp = null;
+let msalInit = null;
+let tokenInFlight = null;
+
+async function initMsal() {
+  if (msalInit) return msalInit;
+  msalInit = (async () => {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    msalApp = new msal.PublicClientApplication({
+      auth: {
+        clientId: config.clientId,
+        authority: `https://login.microsoftonline.com/${config.tenant}`,
+        redirectUri: location.origin + location.pathname
+      },
+      cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true }
+    });
+    await msalApp.initialize();
+    // offene Interaktionen aus vorherigen Versuchen abräumen
+    try { await msalApp.handleRedirectPromise(); } catch (e) { console.warn(e); }
+    return msalApp;
+  })();
+  return msalInit;
+}
+
+async function getToken() {
+  // Nur eine Anmeldung gleichzeitig, sonst "interaction_in_progress"
+  if (tokenInFlight) return tokenInFlight;
+  tokenInFlight = (async () => {
+    await initMsal();
+    const scopes = ['https://api.businesscentral.dynamics.com/Financials.ReadWrite.All'];
+    const accounts = msalApp.getAllAccounts();
+    const account = accounts.length ? accounts[0] : undefined;
+    try {
+      return (await msalApp.acquireTokenSilent({ scopes, account })).accessToken;
+    } catch (e) {
+      return (await msalApp.acquireTokenPopup({ scopes, account })).accessToken;
+    }
+  })();
+  try { return await tokenInFlight; }
+  finally { tokenInFlight = null; }
+}
+
+async function getCompanyId() {
+  if (companyId) return companyId;
+  const token = await getToken();
+  const res = await fetch(
+    `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/v2.0/companies`,
+    { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }
+  );
+  if (!res.ok) throw new Error(`Company Fehler ${res.status}`);
+  const data = await res.json();
+  const company = (data.value || []).find(c => c.name === 'My Company') || (data.value || [])[0];
+  if (!company) throw new Error('Kein Unternehmen gefunden');
+  companyId = company.id;
+  return companyId;
+}
+
+function apiUrl(group, version, path) {
+  return `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/se/${group}/${version}/companies(${companyId})/${path}`;
+}
+function stdApiUrl(path) {
+  return `https://api.businesscentral.dynamics.com/v2.0/${config.tenant}/${config.env}/api/v2.0/companies(${companyId})/${path}`;
+}
+
+async function apiFetch(url, options = {}) {
+  await getCompanyId();
+  const token = await getToken();
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.headers || {})
+    }
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(`BC ${res.status}: ${t.substring(0, 300)}`); }
+  return res.status === 204 ? null : res.json();
+}
+
+// ── Techniker ────────────────────────────────────────────────────
+async function loadTechniker() {
+  showScreen('screenPick');
+  const err = document.getElementById('errPick');
+  err.classList.remove('show');
+  try {
+    await getCompanyId();
+    const data = await apiFetch(apiUrl('techniker', 'v1.0', 'seTechniker'));
+    techData = (data.value || []).filter(t => t.active !== false);
+    filteredTech = techData;
+    renderTech();
+
+    const p = new URLSearchParams(location.search).get('tech');
+    if (p) {
+      const t = techData.find(x => String(x.technicianId) === String(p));
+      if (t) selectTech(t.technicianId);
+    }
+  } catch (e) {
+    const l = document.getElementById('loadingText');
+    if (l) l.style.display = 'none';
+    err.textContent = 'Fehler beim Laden der Techniker:\n' + e.message;
+    err.classList.add('show');
+  }
+}
+
+function renderTech() {
+  const el = document.getElementById('techList');
+  if (!filteredTech.length) { el.innerHTML = '<div class="list-msg">Keine Techniker gefunden</div>'; return; }
+  el.innerHTML = filteredTech.map(t => `
+    <button class="tech-btn" onclick="selectTech('${t.technicianId}')">
+      <div class="tech-avatar">${initials(t.name)}</div>
+      <div><div class="tech-name">${esc(t.name)}</div><div class="tech-id">ID ${esc(t.technicianId)}</div></div>
+    </button>`).join('');
+}
+
+function filterTech() {
+  const q = document.getElementById('techSearch').value.toLowerCase();
+  filteredTech = techData.filter(t =>
+    (t.name || '').toLowerCase().includes(q) || String(t.technicianId).toLowerCase().includes(q));
+  renderTech();
+}
+
+function selectTech(id) {
+  currentTech = techData.find(t => String(t.technicianId) === String(id));
+  if (!currentTech) return;
+  document.getElementById('userName').textContent = currentTech.name;
+  document.getElementById('userId').textContent = 'TECHNIKER-ID ' + currentTech.technicianId;
+  document.getElementById('userInitials').textContent = initials(currentTech.name);
+  scope = 'mine'; updateChips();
+  showScreen('screenList');
+  loadTasks();
+  loadServiceItems();
+}
+
+function backToPick() { currentTech = null; showScreen('screenPick'); }
+function backToList() { currentTask = null; showScreen('screenList'); loadTasks(); }
+
+// ── Aufgaben ─────────────────────────────────────────────────────
+async function loadTasks() {
+  const err = document.getElementById('errList');
+  err.classList.remove('show');
+  document.getElementById('taskList').innerHTML = '<div class="list-msg">Lade Aufgaben...</div>';
+  try {
+    const data = await apiFetch(apiUrl('calibration', 'v1.0', 'orderLineTasks?$top=1000'));
+    allTasks = data.value || [];
+
+    orderProgress = {};
+    allTasks.forEach(t => {
+      const k = t.documentNo;
+      if (!orderProgress[k]) orderProgress[k] = { done: 0, total: 0 };
+      orderProgress[k].total++;
+      if (String(t.status) === 'Fertig') orderProgress[k].done++;
+    });
+
+    renderTasks();
+    renderStats();
+  } catch (e) {
+    document.getElementById('taskList').innerHTML = '';
+    err.textContent = 'Fehler beim Laden der Aufgaben:\n' + e.message;
+    err.classList.add('show');
+  }
+}
+
+function myTasks() {
+  if (!currentTech) return allTasks;
+  return allTasks.filter(t => String(t.technicianId) === String(currentTech.technicianId));
+}
+
+function renderStats() {
+  const mine = myTasks();
+  const open = mine.filter(t => String(t.status) !== 'Fertig');
+  document.getElementById('statOpen').textContent = open.length;
+  document.getElementById('statDue').textContent = open.filter(t => dueClass(t.dueDate) === 'over').length;
+  document.getElementById('statDone').textContent = mine.filter(t => String(t.status) === 'Fertig').length;
+}
+
+function visibleTasks() {
+  let list = (scope === 'mine') ? myTasks() : allTasks.slice();
+  if (!showDone) list = list.filter(t => String(t.status) !== 'Fertig');
+  list.sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'));
+  return list;
+}
+
+function renderTasks() {
+  const el = document.getElementById('taskList');
+  const list = visibleTasks();
+  if (!list.length) { el.innerHTML = '<div class="list-msg">Keine Aufgaben vorhanden</div>'; return; }
+
+  el.innerHTML = list.map(t => {
+    const p = orderProgress[t.documentNo] || { done: 0, total: 0 };
+    const pct = p.total ? Math.round(p.done / p.total * 100) : 0;
+    const st = String(t.status);
+    const badge = st === 'Fertig' ? 'badge-fertig' : (st === 'Kalibrierung' ? 'badge-kal' : 'badge-neu');
+    return `
+    <button class="task-btn" onclick="openTask('${t.systemId}')">
+      <div class="task-accent"></div>
+      <div class="task-inner">
+        <div class="task-main">
+          <div class="task-dev">${esc(t.manufacturer || '')} ${esc(t.model || '')}</div>
+          <div class="task-desc">${esc(t.deviceDescription || '')}</div>
+          <div class="task-meta">
+            ${esc(t.customerName || '')}
+            <span class="id">&middot; AUFTRAG ${esc(t.documentNo)}</span><br>
+            <span class="id">SN ${esc(t.serialNo || '-')} &middot; ${esc(t.seId || '')}</span>
+            ${scope === 'all' ? '<br>Techniker: ' + esc(t.technicianName || '-') : ''}
+          </div>
+          <div class="task-tags">
+            ${t.standort ? `<span class="tag tag-kiste">${esc(t.standort)}</span>` : ''}
+            ${t.scope ? `<span class="tag tag-scope">${esc(t.scope)}</span>` : ''}
+            ${t.bemerkung ? `<span class="tag tag-bem">Bemerkung</span>` : ''}
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-lbl"><span>AUFTRAG ${p.done} VON ${p.total} FERTIG</span><span class="prog-pct">${pct}%</span></div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+        <div class="task-side">
+          <span class="badge ${badge}">${esc(st)}</span>
+          <div class="due ${dueClass(t.dueDate)}">${fmtDate(t.dueDate)}</div>
+        </div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+function setScope(s) { scope = s; updateChips(); renderTasks(); }
+function toggleDone() { showDone = !showDone; updateChips(); renderTasks(); }
+function updateChips() {
+  document.getElementById('chipMine').classList.toggle('active', scope === 'mine');
+  document.getElementById('chipAll').classList.toggle('active', scope === 'all');
+  const d = document.getElementById('chipDone');
+  d.classList.toggle('active', showDone);
+  d.textContent = showDone ? 'Erledigte ausblenden' : 'Erledigte einblenden';
+}
+
+// ── Detail ───────────────────────────────────────────────────────
+async function openTask(systemId) {
+  currentTask = allTasks.find(t => t.systemId === systemId);
+  if (!currentTask) return;
+  currentEtag = currentTask['@odata.etag'] || '*';
+
+  document.getElementById('detDevice').textContent =
+    `${currentTask.manufacturer || ''} ${currentTask.model || ''}`.trim();
+  document.getElementById('detMeta').innerHTML =
+    `${esc(currentTask.deviceDescription || '')} &middot; ${esc(currentTask.customerName || '')}` +
+    `<br><span class="id">SN ${esc(currentTask.serialNo || '-')} &middot; AUFTRAG ${esc(currentTask.documentNo)}</span>`;
+
+  // Abgleich: Schalter nur an, wenn tatsächlich ein Abgleich hinterlegt ist
+  const abgl = (currentTask.abgleich == null ? '' : String(currentTask.abgleich)).trim();
+  const hatAbgleich = (abgl !== '' && abgl !== '0');
+  document.getElementById('fAbgleichAn').checked = hatAbgleich;
+  document.getElementById('fAbgleich').value = (abgl === 'Abgleich2Scheine') ? 'Abgleich2Scheine' : 'Abgleich';
+  document.getElementById('fAbgleichDauer').value = currentTask.abgleichDauer || '';
+
+  // Reparatur: nur an, wenn Beschreibung oder Dauer vorhanden
+  const hatRep = !!currentTask.reparatur &&
+    (!!(currentTask.reparaturBeschreibung || '').trim() || (currentTask.reparaturDauer || 0) > 0);
+  document.getElementById('fReparatur').checked = hatRep;
+  document.getElementById('fRepBeschr').value = currentTask.reparaturBeschreibung || '';
+  document.getElementById('fRepDauer').value = currentTask.reparaturDauer || '';
+
+  // Ersatzteile: zunächst aus, wird nach dem Laden der Zeilen gesetzt
+  document.getElementById('fErsatzteile').checked = false;
+  document.getElementById('fNotiz').value = currentTask.notiz || '';
+
+  // Auftragsinfo: Standort, Kalibrierumfang, Bemerkung
+  const infos = [];
+  if (currentTask.standort) infos.push(['Standort / Kiste', esc(currentTask.standort), 'kiste']);
+  if (currentTask.scope) infos.push(['Kalibrierumfang', esc(currentTask.scope), '']);
+  if (currentTask.bemerkung) infos.push(['Bemerkung', esc(currentTask.bemerkung), 'bem']);
+  const ig = document.getElementById('infoGrid');
+  ig.innerHTML = infos.map(([l, v, k]) =>
+    `<div class="info-item"><div class="info-lbl">${l}</div><div class="info-val ${k}">${v}</div></div>`).join('');
+  document.getElementById('infoCard').style.display = infos.length ? 'block' : 'none';
+
+  // SharePoint-Ordner des Auftrags
+  const sp = document.getElementById('spLink');
+  const spUrl = buildSharePointUrl(currentTask);
+  if (spUrl) { sp.href = spUrl; sp.style.display = 'block'; }
+  else { sp.style.display = 'none'; }
+
+  onAbgleichAnChange(); onAbgleichChange(); onReparaturChange(); onErsatzChange();
+  document.getElementById('errDetail').classList.remove('show');
+  showScreen('screenDetail');
+  loadSpareParts();
+}
+
+// Ordner: <Bibliothek>/<Jahr>/<Kunde>/<AuftragsNr> - <Kunde>
+function buildSharePointUrl(task) {
+  // Bevorzugt der in BC hinterlegte Ordner-Link
+  if (task.sharePointFolder) return task.sharePointFolder;
+  if (!config.spBase) return '';
+  const kunde = (task.customerName || '').trim();
+  if (!kunde) return '';
+  const datum = task.orderDate || task.dueDate || '';
+  const jahr = (datum && datum.length >= 4) ? datum.substring(0, 4) : String(new Date().getFullYear());
+  const basis = config.spBase.replace(/\/+$/, '');
+  let ordnerPfad, bibUrl;
+  try {
+    const u = new URL(basis);
+    ordnerPfad = `${u.pathname}/${jahr}/${kunde}/${task.documentNo} - ${kunde}`;
+    // Ansichtsseite liegt auf Ebene der Bibliothek, nicht des Unterordners
+    const bibPfad = u.pathname.replace(/\/[^/]+$/, '');
+    bibUrl = `${u.origin}${bibPfad}/Forms/AllItems.aspx`;
+  } catch (e) { return ''; }
+  return `${bibUrl}?id=${encodeURIComponent(ordnerPfad)}`;
+}
+
+function onAbgleichAnChange() {
+  const an = document.getElementById('fAbgleichAn').checked;
+  document.getElementById('wrapAbgl').style.display = an ? 'block' : 'none';
+  if (an) onAbgleichChange();
+}
+function onAbgleichChange() {
+  const v = document.getElementById('fAbgleich').value;
+  document.getElementById('wrapAbglDauer').style.display = (v === 'Abgleich') ? 'block' : 'none';
+}
+function onReparaturChange() {
+  document.getElementById('wrapRep').style.display = document.getElementById('fReparatur').checked ? 'block' : 'none';
+}
+function onErsatzChange() {
+  document.getElementById('wrapEt').style.display = document.getElementById('fErsatzteile').checked ? 'block' : 'none';
+}
+
+// ── Ersatzteile ──────────────────────────────────────────────────
+async function loadServiceItems() {
+  if (serviceItems.length) return;
+  try {
+    const data = await apiFetch(stdApiUrl(`items?$filter=type eq 'Service'&$select=number,displayName&$top=500`));
+    serviceItems = (data.value || []).filter(i => !EXCLUDED_ITEMS.includes((i.number || '').toUpperCase()));
+    document.getElementById('etItem').innerHTML =
+      '<option value="">– wählen –</option>' +
+      serviceItems.map(i => `<option value="${esc(i.number)}">${esc(i.number)} – ${esc(i.displayName || '')}</option>`).join('');
+  } catch (e) { console.warn('Artikel konnten nicht geladen werden', e); }
+}
+
+async function loadSpareParts() {
+  const el = document.getElementById('etList');
+  el.innerHTML = '<div class="list-msg">Lade...</div>';
+  try {
+    const f = `$filter=documentNo eq '${currentTask.documentNo}' and taskLineNo eq ${currentTask.lineNo}`;
+    const data = await apiFetch(apiUrl('calibration', 'v1.0', `taskSpareParts?${f}`));
+    spareParts = data.value || [];
+    if (spareParts.length) {
+      document.getElementById('fErsatzteile').checked = true;
+      onErsatzChange();
+    }
+    renderSpareParts();
+  } catch (e) {
+    el.innerHTML = `<div class="list-msg">Ersatzteile konnten nicht geladen werden</div>`;
+  }
+}
+
+function renderSpareParts() {
+  const el = document.getElementById('etList');
+  if (!spareParts.length) { el.innerHTML = '<div class="list-msg">Noch keine Ersatzteile erfasst</div>'; return; }
+  el.innerHTML = spareParts.map(p => `
+    <div class="et-row">
+      <div class="et-info">
+        <div class="et-name">${esc(p.description || p.itemNo || '')}</div>
+        <div class="et-sub">${esc(p.itemNo || 'FREITEXT')} &middot; MENGE ${p.quantity}</div>
+      </div>
+      <button class="et-del" onclick="delErsatzteil('${p.systemId}')" title="Entfernen">&times;</button>
+    </div>`).join('');
+}
+
+async function addErsatzteil() {
+  const itemNo = document.getElementById('etItem').value;
+  const qty = parseFloat(document.getElementById('etQty').value || '1');
+  if (!itemNo) { toast('Bitte Artikel wählen'); return; }
+  if (!(qty > 0)) { toast('Menge muss größer als 0 sein'); return; }
+  const item = serviceItems.find(i => i.number === itemNo);
+  try {
+    await apiFetch(apiUrl('calibration', 'v1.0', 'taskSpareParts'), {
+      method: 'POST',
+      body: JSON.stringify({
+        documentType: 'Order',
+        documentNo: currentTask.documentNo,
+        taskLineNo: currentTask.lineNo,
+        itemNo: itemNo,
+        description: (item && item.displayName) || itemNo,
+        quantity: qty,
+        isFreeText: false
+      })
+    });
+    document.getElementById('etQty').value = 1;
+    document.getElementById('etItem').value = '';
+    toast('Ersatzteil hinzugefügt');
+    loadSpareParts();
+  } catch (e) { showErr('errDetail', e.message); }
+}
+
+async function delErsatzteil(systemId) {
+  const p = spareParts.find(x => x.systemId === systemId);
+  try {
+    await apiFetch(apiUrl('calibration', 'v1.0', `taskSpareParts(${systemId})`), {
+      method: 'DELETE',
+      headers: { 'If-Match': '*' }
+    });
+    toast('Ersatzteil entfernt');
+    loadSpareParts();
+  } catch (e) { showErr('errDetail', e.message); }
+}
+
+// ── Speichern ────────────────────────────────────────────────────
+async function saveTask(neuerStatus) {
+  const setFertig = (neuerStatus === 'Fertig');
+  const abglAn = document.getElementById('fAbgleichAn').checked;
+  const abgl = abglAn ? document.getElementById('fAbgleich').value : ' ';
+  const rep = document.getElementById('fReparatur').checked;
+  const ersatz = document.getElementById('fErsatzteile').checked;
+
+  if (abgl === 'Abgleich' && !(parseFloat(document.getElementById('fAbgleichDauer').value) > 0)) {
+    toast('Bitte Dauer für den Abgleich eintragen'); return;
+  }
+  if (rep && !(parseFloat(document.getElementById('fRepDauer').value) > 0)) {
+    toast('Bitte Dauer für die Reparatur eintragen'); return;
+  }
+  if (rep && !document.getElementById('fRepBeschr').value.trim()) {
+    toast('Bitte beschreiben, was repariert wurde'); return;
+  }
+  if (setFertig && ersatz && !spareParts.length) {
+    if (!confirm('Es ist "Ersatzteile verwendet" gesetzt, aber kein Ersatzteil erfasst.\n\nTrotzdem als fertig melden?')) return;
+  }
+
+  const body = {
+    abgleich: abgl,
+    abgleichDauer: abgl === 'Abgleich' ? parseFloat(document.getElementById('fAbgleichDauer').value || '0') : 0,
+    reparatur: rep,
+    reparaturBeschreibung: rep ? document.getElementById('fRepBeschr').value : '',
+    reparaturDauer: rep ? parseFloat(document.getElementById('fRepDauer').value || '0') : 0,
+    ersatzteileVerwendet: ersatz,
+    notiz: document.getElementById('fNotiz').value
+  };
+  if (neuerStatus) body.status = neuerStatus;
+
+  try {
+    await apiFetch(apiUrl('calibration', 'v1.0', `orderLineTasks(${currentTask.systemId})`), {
+      method: 'PATCH',
+      headers: { 'If-Match': '*' },
+      body: JSON.stringify(body)
+    });
+    toast(neuerStatus === 'Fertig' ? 'Als fertig gemeldet'
+        : neuerStatus === 'Kalibrierung' ? 'Auf Kalibrierung gesetzt' : 'Gespeichert');
+    setTimeout(backToList, 600);
+  } catch (e) { showErr('errDetail', e.message); }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function initials(n) {
+  return (n || '').split(' ').filter(Boolean).slice(0, 2).map(x => x[0].toUpperCase()).join('') || '--';
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function fmtDate(d) {
+  if (!d || d === '0001-01-01') return '–';
+  const p = d.split('-'); return `${p[2]}.${p[1]}.${p[0]}`;
+}
+function dueClass(d) {
+  if (!d || d === '0001-01-01') return '';
+  const due = new Date(d), today = new Date(); today.setHours(0, 0, 0, 0);
+  const diff = (due - today) / 86400000;
+  if (diff < 0) return 'over';
+  if (diff <= 3) return 'soon';
+  return '';
+}
+function showErr(id, msg) {
+  const e = document.getElementById(id);
+  e.textContent = msg; e.classList.add('show');
+  e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── Config ───────────────────────────────────────────────────────
+function showConfig() {
+  document.getElementById('cfgTenant').value = config.tenant || '';
+  document.getElementById('cfgEnv').value = config.env || '';
+  document.getElementById('cfgClientId').value = config.clientId || '';
+  document.getElementById('cfgSpBase').value = config.spBase || '';
+  document.getElementById('modalBg').classList.add('show');
+}
+function hideConfig() { document.getElementById('modalBg').classList.remove('show'); }
+function saveConfig() {
+  config = {
+    tenant: document.getElementById('cfgTenant').value.trim(),
+    env: document.getElementById('cfgEnv').value.trim(),
+    clientId: document.getElementById('cfgClientId').value.trim(),
+    spBase: document.getElementById('cfgSpBase').value.trim()
+  };
+  localStorage.setItem('bcConfig', JSON.stringify(config));
+  hideConfig();
+  location.reload();
+}
+</script>
+</body>
+</html>
