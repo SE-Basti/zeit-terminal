@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0A1628">
 <title>Aufgaben · Systems Engineering</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy-900:#060F1E; --navy-800:#0A1628; --navy-700:#0F1F35;
@@ -17,10 +14,10 @@
   --green:#1E8B72; --green-soft:#E4F4F0;
   --amber:#B8721A; --amber-soft:#FBF0DE;
   --red:#C93838; --red-soft:#FBEAEA;
-  --mono:'IBM Plex Mono','SF Mono',Consolas,monospace;
+  --mono:'SF Mono',Consolas,'Roboto Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;font-variant-numeric:tabular-nums;background:var(--light);color:var(--ink-900);min-height:100vh;display:flex;flex-direction:column;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--light);color:var(--ink-900);min-height:100vh;display:flex;flex-direction:column;}
 
 .header{background:var(--navy-800);color:#fff;padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;}
 .header-left{display:flex;align-items:center;gap:14px;}
@@ -44,7 +41,7 @@ h2.title em{font-style:normal;color:var(--blue);}
 .sub{font-size:14px;color:var(--ink-600);margin-top:.5rem;line-height:1.6;}
 
 .card{background:var(--white);border:1px solid var(--line);padding:1.25rem;width:100%;}
-.card-title{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.6px;color:var(--ink-400);margin-bottom:1rem;}
+.card-title{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--ink-400);margin-bottom:1rem;}
 
 .search-input{width:100%;padding:.8rem .9rem;border:1px solid var(--line);font-size:15px;color:var(--ink-900);background:var(--white);outline:none;font-family:inherit;margin-bottom:10px;}
 .search-input:focus{border-color:var(--blue);}
@@ -69,7 +66,7 @@ h2.title em{font-style:normal;color:var(--blue);}
 .stat{padding:1rem 1.1rem;border-right:1px solid rgba(255,255,255,.22);}
 .stat:last-child{border-right:none;}
 .stat-val{font-size:26px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
-.stat-lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,.85);}
+.stat-lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,.85);}
 
 .toolbar{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:var(--white);}
 .chip{padding:.7rem 1rem;border:none;border-right:1px solid var(--line);background:none;color:var(--ink-600);font-size:12.5px;cursor:pointer;font-family:inherit;letter-spacing:.2px;}
@@ -86,13 +83,7 @@ h2.title em{font-style:normal;color:var(--blue);}
 .task-main{min-width:0;}
 .task-dev{font-size:15.5px;font-weight:700;letter-spacing:-.2px;}
 .task-desc{font-size:13px;color:var(--ink-600);margin-top:3px;}
-.task-meta{font-size:12px;color:var(--ink-600);margin-top:7px;line-height:1.7;}
-.task-meta .id{font-family:var(--mono);font-size:11px;color:var(--ink-400);letter-spacing:.3px;}
-.task-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-.tag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.8px;padding:.25rem .55rem;}
-.tag-kiste{background:var(--blue-soft);color:var(--blue);}
-.tag-scope{background:var(--light);color:var(--ink-600);letter-spacing:.4px;font-weight:500;}
-.tag-bem{background:var(--amber-soft);color:var(--amber);}
+.task-meta{font-family:var(--mono);font-size:11px;color:var(--ink-400);margin-top:7px;line-height:1.7;letter-spacing:.3px;}
 .task-side{text-align:right;flex-shrink:0;}
 .badge{display:inline-block;padding:.25rem .6rem;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;}
 .badge-neu{background:var(--light);color:var(--ink-600);}
@@ -102,19 +93,17 @@ h2.title em{font-style:normal;color:var(--blue);}
 .due.over{color:var(--red);font-weight:700;}
 .due.soon{color:var(--amber);font-weight:700;}
 .prog-wrap{margin-top:9px;}
-.prog-lbl{font-family:var(--mono);font-size:10px;color:var(--ink-400);letter-spacing:.8px;display:flex;justify-content:space-between;gap:10px;}
-.prog-pct{color:var(--ink-900);font-weight:700;}
+.prog-lbl{font-family:var(--mono);font-size:10px;color:var(--ink-400);letter-spacing:.8px;}
 .prog-bar{height:3px;background:var(--line);margin-top:4px;width:150px;max-width:100%;}
 .prog-fill{height:100%;background:var(--green);}
 
 .det-head{background:var(--navy-800);color:#fff;padding:1.25rem;display:flex;align-items:flex-start;gap:14px;}
 .det-dev{font-size:20px;font-weight:800;letter-spacing:-.3px;}
-.det-meta{font-size:13px;color:rgba(255,255,255,.75);margin-top:6px;line-height:1.7;}
-.det-meta .id{font-family:var(--mono);font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:.4px;}
+.det-meta{font-family:var(--mono);font-size:11.5px;color:rgba(255,255,255,.65);margin-top:6px;line-height:1.7;letter-spacing:.4px;}
 
 .field{margin-bottom:1rem;}
 .field:last-child{margin-bottom:0;}
-.field label{display:block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-400);margin-bottom:.45rem;}
+.field label{display:block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-400);margin-bottom:.45rem;}
 .field input[type=text],.field input[type=number],.field select,.field textarea{
   width:100%;padding:.75rem .85rem;border:1px solid var(--line);font-size:15px;
   color:var(--ink-900);background:var(--white);outline:none;font-family:inherit;}
@@ -146,17 +135,7 @@ h2.title em{font-style:normal;color:var(--blue);}
 .btn-outline{background:var(--white);color:var(--ink-900);border:1px solid var(--ink-900);}
 .btn-outline:hover{background:var(--light);}
 .btn-sm{padding:.72rem 1rem;min-height:auto;font-size:13px;width:auto;}
-.info-grid{display:flex;flex-direction:column;gap:.85rem;}
-.info-item{display:flex;gap:14px;align-items:flex-start;}
-.info-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-400);width:130px;flex-shrink:0;padding-top:2px;}
-.info-val{font-size:14.5px;line-height:1.55;flex:1;}
-.info-val.kiste{font-family:var(--mono);font-weight:600;font-size:16px;color:var(--blue);}
-.info-val.bem{color:var(--ink-900);background:var(--amber-soft);border-left:3px solid var(--amber);padding:.6rem .75rem;}
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.action-grid.three{grid-template-columns:1fr 1fr 1fr;}
-.btn-amber{background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber);}
-.btn-amber:hover{background:#F6E3C6;}
-@media(max-width:640px){.action-grid.three{grid-template-columns:1fr;}}
 
 .err{background:var(--red-soft);color:var(--red);border-left:3px solid var(--red);padding:.9rem 1rem;font-size:13px;display:none;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);line-height:1.6;}
 .err.show{display:block;}
@@ -197,10 +176,11 @@ h2.title em{font-style:normal;color:var(--blue);}
   <div class="screen" id="screenPick">
     <div>
       <div class="eyebrow">Anmeldung</div>
-      <h2 class="title"><em>Techniker/in</em> auswählen</h2>
+      <h2 class="title">Wer <em>bist</em> du?</h2>
       <div class="sub">Wähle deinen Namen, um deine Geräte und Aufgaben zu sehen.</div>
     </div>
     <div class="card">
+      <div class="card-title">Techniker auswählen</div>
       <input class="search-input" id="techSearch" placeholder="Name oder ID suchen..." oninput="filterTech()">
       <div class="tech-list" id="techList"><div class="list-msg" id="loadingText">Lade Techniker...</div></div>
     </div>
@@ -240,38 +220,24 @@ h2.title em{font-style:normal;color:var(--blue);}
         <div class="det-dev" id="detDevice">-</div>
         <div class="det-meta" id="detMeta"></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;">
-        <button class="logout-btn" onclick="backToList()">Zurück</button>
-        <a class="logout-btn" id="spLink" href="#" target="_blank" rel="noopener"
-           style="display:none;text-decoration:none;text-align:center;">Unterlagen</a>
-      </div>
+      <button class="logout-btn" onclick="backToList()">Zurück</button>
     </div>
 
     <div class="err" id="errDetail"></div>
 
-    <div class="card" id="infoCard" style="display:none;">
-      <div class="card-title">Auftragsinfo</div>
-      <div class="info-grid" id="infoGrid"></div>
-    </div>
-
     <div class="card">
       <div class="card-title">Abgleich</div>
-      <div class="switch-row">
-        <span class="switch-lbl">Abgleich durchgeführt</span>
-        <label class="switch"><input type="checkbox" id="fAbgleichAn" onchange="onAbgleichAnChange()"><span class="slider"></span></label>
+      <div class="field">
+        <label>Art des Abgleichs</label>
+        <select id="fAbgleich" onchange="onAbgleichChange()">
+          <option value=" ">– kein Abgleich –</option>
+          <option value="Abgleich">Abgleich</option>
+          <option value="Abgleich2Scheine">Abgleich (2 Kalibrierscheine)</option>
+        </select>
       </div>
-      <div id="wrapAbgl" style="margin-top:1.1rem;">
-        <div class="field">
-          <label>Art des Abgleichs</label>
-          <select id="fAbgleich" onchange="onAbgleichChange()">
-            <option value="Abgleich">Abgleich</option>
-            <option value="Abgleich2Scheine">Abgleich (2 Kalibrierscheine)</option>
-          </select>
-        </div>
-        <div class="field" id="wrapAbglDauer">
-          <label>Dauer in Stunden</label>
-          <input type="number" step="0.25" min="0" id="fAbgleichDauer" placeholder="0,00">
-        </div>
+      <div class="field" id="wrapAbglDauer">
+        <label>Dauer in Stunden</label>
+        <input type="number" step="0.25" min="0" id="fAbgleichDauer" placeholder="0,00">
       </div>
     </div>
 
@@ -322,10 +288,9 @@ h2.title em{font-style:normal;color:var(--blue);}
       </div>
     </div>
 
-    <div class="action-grid three">
-      <button class="btn btn-outline" onclick="saveTask(null)">Speichern</button>
-      <button class="btn btn-amber" onclick="saveTask('Kalibrierung')">In Kalibrierung</button>
-      <button class="btn btn-primary" onclick="saveTask('Fertig')">Fertig melden</button>
+    <div class="action-grid">
+      <button class="btn btn-outline" onclick="saveTask(false)">Speichern</button>
+      <button class="btn btn-primary" onclick="saveTask(true)">Fertig melden</button>
     </div>
   </div>
 
@@ -337,7 +302,6 @@ h2.title em{font-style:normal;color:var(--blue);}
     <div><label>Tenant ID</label><input type="text" id="cfgTenant"></div>
     <div><label>Umgebung</label><input type="text" id="cfgEnv"></div>
     <div><label>Client ID</label><input type="text" id="cfgClientId"></div>
-    <div><label>SharePoint-Ordner (Basis-URL)</label><input type="text" id="cfgSpBase" placeholder="https://...sharepoint.com/sites/.../Auftraege"></div>
     <div class="cfg-btns">
       <button class="btn btn-outline btn-sm" style="flex:1" onclick="hideConfig()">Abbrechen</button>
       <button class="btn btn-primary btn-sm" style="flex:1" onclick="saveConfig()">Speichern</button>
@@ -351,9 +315,8 @@ h2.title em{font-style:normal;color:var(--blue);}
 // ── Config ───────────────────────────────────────────────────────
 const DEFAULT_CONFIG = {
   tenant: '16453c34-b7f8-45d7-99b7-7ffc6f949dd4',
-  env: 'SETest',
-  clientId: 'cd7c672f-c722-42ed-a362-b5c530a2775b',
-  spBase: 'https://systemsengineering93.sharepoint.com/sites/SystemsEngineering/Kalibrierauftrge/Aktiv'
+  env: 'SE_30042026',
+  clientId: 'cd7c672f-c722-42ed-a362-b5c530a2775b'
 };
 let config = { ...DEFAULT_CONFIG, ...JSON.parse(localStorage.getItem('bcConfig') || '{}') };
 
@@ -376,12 +339,8 @@ window.onload = () => { loadTechniker(); };
 
 // ── Auth ─────────────────────────────────────────────────────────
 let msalApp = null;
-let msalInit = null;
-let tokenInFlight = null;
-
-async function initMsal() {
-  if (msalInit) return msalInit;
-  msalInit = (async () => {
+async function getToken() {
+  if (!msalApp) {
     await new Promise((res, rej) => {
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js';
@@ -397,29 +356,10 @@ async function initMsal() {
       cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true }
     });
     await msalApp.initialize();
-    // offene Interaktionen aus vorherigen Versuchen abräumen
-    try { await msalApp.handleRedirectPromise(); } catch (e) { console.warn(e); }
-    return msalApp;
-  })();
-  return msalInit;
-}
-
-async function getToken() {
-  // Nur eine Anmeldung gleichzeitig, sonst "interaction_in_progress"
-  if (tokenInFlight) return tokenInFlight;
-  tokenInFlight = (async () => {
-    await initMsal();
-    const scopes = ['https://api.businesscentral.dynamics.com/Financials.ReadWrite.All'];
-    const accounts = msalApp.getAllAccounts();
-    const account = accounts.length ? accounts[0] : undefined;
-    try {
-      return (await msalApp.acquireTokenSilent({ scopes, account })).accessToken;
-    } catch (e) {
-      return (await msalApp.acquireTokenPopup({ scopes, account })).accessToken;
-    }
-  })();
-  try { return await tokenInFlight; }
-  finally { tokenInFlight = null; }
+  }
+  const scopes = ['https://api.businesscentral.dynamics.com/Financials.ReadWrite.All'];
+  try { return (await msalApp.acquireTokenSilent({ scopes })).accessToken; }
+  catch { return (await msalApp.acquireTokenPopup({ scopes })).accessToken; }
 }
 
 async function getCompanyId() {
@@ -581,18 +521,12 @@ function renderTasks() {
           <div class="task-dev">${esc(t.manufacturer || '')} ${esc(t.model || '')}</div>
           <div class="task-desc">${esc(t.deviceDescription || '')}</div>
           <div class="task-meta">
-            ${esc(t.customerName || '')}
-            <span class="id">&middot; AUFTRAG ${esc(t.documentNo)}</span><br>
-            <span class="id">SN ${esc(t.serialNo || '-')} &middot; ${esc(t.seId || '')}</span>
-            ${scope === 'all' ? '<br>Techniker: ' + esc(t.technicianName || '-') : ''}
-          </div>
-          <div class="task-tags">
-            ${t.standort ? `<span class="tag tag-kiste">${esc(t.standort)}</span>` : ''}
-            ${t.scope ? `<span class="tag tag-scope">${esc(t.scope)}</span>` : ''}
-            ${t.bemerkung ? `<span class="tag tag-bem">Bemerkung</span>` : ''}
+            ${esc(t.customerName || '')} &middot; AUFTRAG ${esc(t.documentNo)}<br>
+            SN ${esc(t.serialNo || '-')} &middot; ${esc(t.seId || '')}
+            ${scope === 'all' ? '<br>TECHNIKER: ' + esc(t.technicianName || '-') : ''}
           </div>
           <div class="prog-wrap">
-            <div class="prog-lbl"><span>AUFTRAG ${p.done} VON ${p.total} FERTIG</span><span class="prog-pct">${pct}%</span></div>
+            <div class="prog-lbl">AUFTRAG ${p.done} VON ${p.total} FERTIG</div>
             <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
           </div>
         </div>
@@ -619,91 +553,28 @@ function updateChips() {
 async function openTask(systemId) {
   currentTask = allTasks.find(t => t.systemId === systemId);
   if (!currentTask) return;
-
-  // Immer den aktuellen Stand aus BC holen - Änderungen aus BC sollen sichtbar sein
-  try {
-    const frisch = await apiFetch(apiUrl('calibration', 'v1.0', `orderLineTasks(${systemId})`));
-    if (frisch) {
-      currentTask = frisch;
-      const i = allTasks.findIndex(t => t.systemId === systemId);
-      if (i >= 0) allTasks[i] = frisch;
-    }
-  } catch (e) { console.warn('Aufgabe konnte nicht neu geladen werden', e); }
-
   currentEtag = currentTask['@odata.etag'] || '*';
 
   document.getElementById('detDevice').textContent =
     `${currentTask.manufacturer || ''} ${currentTask.model || ''}`.trim();
   document.getElementById('detMeta').innerHTML =
-    `${esc(currentTask.deviceDescription || '')} &middot; ${esc(currentTask.customerName || '')}` +
-    `<br><span class="id">SN ${esc(currentTask.serialNo || '-')} &middot; AUFTRAG ${esc(currentTask.documentNo)}</span>`;
+    `${esc(currentTask.deviceDescription || '')}<br>SN ${esc(currentTask.serialNo || '-')} &middot; AUFTRAG ${esc(currentTask.documentNo)} &middot; ${esc(currentTask.customerName || '')}`;
 
-  // Abgleich: Schalter nur an, wenn tatsächlich ein Abgleich hinterlegt ist
-  const abgl = (currentTask.abgleich == null ? '' : String(currentTask.abgleich)).trim();
-  const hatAbgleich = (abgl !== '' && abgl !== '0');
-  document.getElementById('fAbgleichAn').checked = hatAbgleich;
-  document.getElementById('fAbgleich').value = (abgl === 'Abgleich2Scheine') ? 'Abgleich2Scheine' : 'Abgleich';
+  const abgl = (currentTask.abgleich == null ? ' ' : String(currentTask.abgleich));
+  document.getElementById('fAbgleich').value = abgl.trim() === '' ? ' ' : abgl;
   document.getElementById('fAbgleichDauer').value = currentTask.abgleichDauer || '';
-
-  // Reparatur: nur an, wenn Beschreibung oder Dauer vorhanden
-  const hatRep = !!currentTask.reparatur &&
-    (!!(currentTask.reparaturBeschreibung || '').trim() || (currentTask.reparaturDauer || 0) > 0);
-  document.getElementById('fReparatur').checked = hatRep;
+  document.getElementById('fReparatur').checked = !!currentTask.reparatur;
   document.getElementById('fRepBeschr').value = currentTask.reparaturBeschreibung || '';
   document.getElementById('fRepDauer').value = currentTask.reparaturDauer || '';
-
-  // Ersatzteile: zunächst aus, wird nach dem Laden der Zeilen gesetzt
-  document.getElementById('fErsatzteile').checked = false;
+  document.getElementById('fErsatzteile').checked = !!currentTask.ersatzteileVerwendet;
   document.getElementById('fNotiz').value = currentTask.notiz || '';
 
-  // Auftragsinfo: Standort, Kalibrierumfang, Bemerkung
-  const infos = [];
-  if (currentTask.standort) infos.push(['Standort / Kiste', esc(currentTask.standort), 'kiste']);
-  if (currentTask.scope) infos.push(['Kalibrierumfang', esc(currentTask.scope), '']);
-  if (currentTask.bemerkung) infos.push(['Bemerkung', esc(currentTask.bemerkung), 'bem']);
-  const ig = document.getElementById('infoGrid');
-  ig.innerHTML = infos.map(([l, v, k]) =>
-    `<div class="info-item"><div class="info-lbl">${l}</div><div class="info-val ${k}">${v}</div></div>`).join('');
-  document.getElementById('infoCard').style.display = infos.length ? 'block' : 'none';
-
-  // SharePoint-Ordner des Auftrags
-  const sp = document.getElementById('spLink');
-  const spUrl = buildSharePointUrl(currentTask);
-  if (spUrl) { sp.href = spUrl; sp.style.display = 'block'; }
-  else { sp.style.display = 'none'; }
-
-  onAbgleichAnChange(); onAbgleichChange(); onReparaturChange(); onErsatzChange();
+  onAbgleichChange(); onReparaturChange(); onErsatzChange();
   document.getElementById('errDetail').classList.remove('show');
   showScreen('screenDetail');
   loadSpareParts();
 }
 
-// Ordner: <Bibliothek>/<Jahr>/<Kunde>/<AuftragsNr> - <Kunde>
-function buildSharePointUrl(task) {
-  // Bevorzugt der in BC hinterlegte Ordner-Link
-  if (task.sharePointFolder) return task.sharePointFolder;
-  if (!config.spBase) return '';
-  const kunde = (task.customerName || '').trim();
-  if (!kunde) return '';
-  const datum = task.orderDate || task.dueDate || '';
-  const jahr = (datum && datum.length >= 4) ? datum.substring(0, 4) : String(new Date().getFullYear());
-  const basis = config.spBase.replace(/\/+$/, '');
-  let ordnerPfad, bibUrl;
-  try {
-    const u = new URL(basis);
-    ordnerPfad = `${u.pathname}/${jahr}/${kunde}/${task.documentNo} - ${kunde}`;
-    // Ansichtsseite liegt auf Ebene der Bibliothek, nicht des Unterordners
-    const bibPfad = u.pathname.replace(/\/[^/]+$/, '');
-    bibUrl = `${u.origin}${bibPfad}/Forms/AllItems.aspx`;
-  } catch (e) { return ''; }
-  return `${bibUrl}?id=${encodeURIComponent(ordnerPfad)}`;
-}
-
-function onAbgleichAnChange() {
-  const an = document.getElementById('fAbgleichAn').checked;
-  document.getElementById('wrapAbgl').style.display = an ? 'block' : 'none';
-  if (an) onAbgleichChange();
-}
 function onAbgleichChange() {
   const v = document.getElementById('fAbgleich').value;
   document.getElementById('wrapAbglDauer').style.display = (v === 'Abgleich') ? 'block' : 'none';
@@ -734,10 +605,6 @@ async function loadSpareParts() {
     const f = `$filter=documentNo eq '${currentTask.documentNo}' and taskLineNo eq ${currentTask.lineNo}`;
     const data = await apiFetch(apiUrl('calibration', 'v1.0', `taskSpareParts?${f}`));
     spareParts = data.value || [];
-    if (spareParts.length) {
-      document.getElementById('fErsatzteile').checked = true;
-      onErsatzChange();
-    }
     renderSpareParts();
   } catch (e) {
     el.innerHTML = `<div class="list-msg">Ersatzteile konnten nicht geladen werden</div>`;
@@ -761,7 +628,7 @@ async function addErsatzteil() {
   const itemNo = document.getElementById('etItem').value;
   const qty = parseFloat(document.getElementById('etQty').value || '1');
   if (!itemNo) { toast('Bitte Artikel wählen'); return; }
-  if (!(qty > 0)) { toast('Menge muss größer als 0 sein'); return; }
+  if (!(qty > 0)) { toast('Menge muss größer 0 sein'); return; }
   const item = serviceItems.find(i => i.number === itemNo);
   try {
     await apiFetch(apiUrl('calibration', 'v1.0', 'taskSpareParts'), {
@@ -788,7 +655,7 @@ async function delErsatzteil(systemId) {
   try {
     await apiFetch(apiUrl('calibration', 'v1.0', `taskSpareParts(${systemId})`), {
       method: 'DELETE',
-      headers: { 'If-Match': '*' }
+      headers: { 'If-Match': (p && p['@odata.etag']) || '*' }
     });
     toast('Ersatzteil entfernt');
     loadSpareParts();
@@ -796,10 +663,8 @@ async function delErsatzteil(systemId) {
 }
 
 // ── Speichern ────────────────────────────────────────────────────
-async function saveTask(neuerStatus) {
-  const setFertig = (neuerStatus === 'Fertig');
-  const abglAn = document.getElementById('fAbgleichAn').checked;
-  const abgl = abglAn ? document.getElementById('fAbgleich').value : ' ';
+async function saveTask(setFertig) {
+  const abgl = document.getElementById('fAbgleich').value;
   const rep = document.getElementById('fReparatur').checked;
   const ersatz = document.getElementById('fErsatzteile').checked;
 
@@ -825,16 +690,15 @@ async function saveTask(neuerStatus) {
     ersatzteileVerwendet: ersatz,
     notiz: document.getElementById('fNotiz').value
   };
-  if (neuerStatus) body.status = neuerStatus;
+  if (setFertig) body.status = 'Fertig';
 
   try {
     await apiFetch(apiUrl('calibration', 'v1.0', `orderLineTasks(${currentTask.systemId})`), {
       method: 'PATCH',
-      headers: { 'If-Match': '*' },
+      headers: { 'If-Match': currentEtag },
       body: JSON.stringify(body)
     });
-    toast(neuerStatus === 'Fertig' ? 'Als fertig gemeldet'
-        : neuerStatus === 'Kalibrierung' ? 'Auf Kalibrierung gesetzt' : 'Gespeichert');
+    toast(setFertig ? 'Als fertig gemeldet' : 'Gespeichert');
     setTimeout(backToList, 600);
   } catch (e) { showErr('errDetail', e.message); }
 }
@@ -882,7 +746,6 @@ function showConfig() {
   document.getElementById('cfgTenant').value = config.tenant || '';
   document.getElementById('cfgEnv').value = config.env || '';
   document.getElementById('cfgClientId').value = config.clientId || '';
-  document.getElementById('cfgSpBase').value = config.spBase || '';
   document.getElementById('modalBg').classList.add('show');
 }
 function hideConfig() { document.getElementById('modalBg').classList.remove('show'); }
@@ -890,8 +753,7 @@ function saveConfig() {
   config = {
     tenant: document.getElementById('cfgTenant').value.trim(),
     env: document.getElementById('cfgEnv').value.trim(),
-    clientId: document.getElementById('cfgClientId').value.trim(),
-    spBase: document.getElementById('cfgSpBase').value.trim()
+    clientId: document.getElementById('cfgClientId').value.trim()
   };
   localStorage.setItem('bcConfig', JSON.stringify(config));
   hideConfig();
