@@ -839,20 +839,40 @@ async function saveTask(neuerStatus) {
       body: JSON.stringify(body)
     });
 
-    // Schritt 2: Status separat setzen, damit sich die beiden
-    // Verarbeitungen in BC nicht denselben Satz gegenseitig ändern (409)
+    // Schritt 2: Status separat setzen. Vorher den Satz frisch laden,
+    // damit BC auf dem aktuellen Stand arbeitet und der durch den PATCH
+    // selbst ausgelöste Rebuild nicht mit dem Schreibvorgang kollidiert (409).
     if (neuerStatus) {
-      await apiFetch(url, {
-        method: 'PATCH',
-        headers: { 'If-Match': '*' },
-        body: JSON.stringify({ status: neuerStatus })
-      });
+      // kurze Pause, damit BC die Nebenwirkungen aus Schritt 1 abschließt
+      await new Promise(r => setTimeout(r, 400));
+      await patchStatusMitWiederholung(url, neuerStatus);
     }
 
     toast(neuerStatus === 'Fertig' ? 'Als fertig gemeldet'
         : neuerStatus === 'Kalibrierung' ? 'Auf Kalibrierung gesetzt' : 'Gespeichert');
     setTimeout(backToList, 600);
   } catch (e) { showErr('errDetail', e.message); }
+}
+
+// Status setzen; bei 409 (Satz zwischenzeitlich geändert) einmal neu laden
+// und erneut versuchen. Deckt die Nebenwirkungen des Rebuilds in BC ab.
+async function patchStatusMitWiederholung(url, neuerStatus) {
+  for (let versuch = 1; versuch <= 3; versuch++) {
+    try {
+      await apiFetch(url, {
+        method: 'PATCH',
+        headers: { 'If-Match': '*' },
+        body: JSON.stringify({ status: neuerStatus })
+      });
+      return;
+    } catch (e) {
+      const konflikt = /409|EntityChanged|neuesten Stand/i.test(e.message);
+      if (!konflikt || versuch === 3) throw e;
+      // Satz neu lesen, kurz warten, dann erneut versuchen
+      try { await apiFetch(url); } catch (_) { }
+      await new Promise(r => setTimeout(r, 500));
+    }
+  }
 }
 
 // ── Helpers ──────────────────────────────────────────────────────
