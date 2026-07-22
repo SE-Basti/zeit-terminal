@@ -828,14 +828,27 @@ async function saveTask(neuerStatus) {
     ersatzteileVerwendet: ersatz,
     notiz: document.getElementById('fNotiz').value
   };
-  if (neuerStatus) body.status = neuerStatus;
+
+  const url = apiUrl('calibration', 'v1.0', `orderLineTasks(${currentTask.systemId})`);
 
   try {
-    await apiFetch(apiUrl('calibration', 'v1.0', `orderLineTasks(${currentTask.systemId})`), {
+    // Schritt 1: Formularfelder speichern (ohne Status)
+    await apiFetch(url, {
       method: 'PATCH',
       headers: { 'If-Match': '*' },
       body: JSON.stringify(body)
     });
+
+    // Schritt 2: Status separat setzen, damit sich die beiden
+    // Verarbeitungen in BC nicht denselben Satz gegenseitig ändern (409)
+    if (neuerStatus) {
+      await apiFetch(url, {
+        method: 'PATCH',
+        headers: { 'If-Match': '*' },
+        body: JSON.stringify({ status: neuerStatus })
+      });
+    }
+
     toast(neuerStatus === 'Fertig' ? 'Als fertig gemeldet'
         : neuerStatus === 'Kalibrierung' ? 'Auf Kalibrierung gesetzt' : 'Gespeichert');
     setTimeout(backToList, 600);
